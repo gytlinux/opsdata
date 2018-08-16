@@ -8,10 +8,10 @@
 
 ```
 [mysql]
-default-character-set=utf8
+default-character-set=utf8  
 
 [mysqld]
-character-set-server=utf8
+character-set-server=utf8 
 
 ```
 
@@ -25,6 +25,43 @@ mysql> show full columns from <tablename>;  -查看 MySQL 数据列（column）�
 mysql> show charset;  --查看当前安装的 MySQL 所支持的字符集。
 mysql>alter database <basename> character set <utf-8>; -修改数据库字符集
 mysql>create database <basename> character set <utf-8>;  -创建数据库指定字符集
+
+```
+
+#### 日志设置
+
+* 配置文件
+
+```
+log_error = /var/log/mysql/error.log   //错误日志
+log_bin                 = /var/log/mysql/mysql-bin.log  //二进制日志
+
+```
+
+* 数据库操作
+
+```
+show variables like 'log_bin';   //查看是否开启二进制日志，ON表示开启
+show binary logs;   //查看所有二进制日志文件
+show master logs;   //查看所有二进制日志文件
+show master status;  //查看当前二进制文件状态
+show binlog events;  //在二进制日志中显示事件
+--SHOW BINLOG EVENTS[IN 'log_name'] [FROM pos] [LIMIT [offset,] row_count]
+--show binlog events in 'DB-Server-bin.000012' from 336;
+
+flush logs      //切换二进制日志
+reset master    //删除所有二进制日志文件
+purge binary logs  //删除部分二进制日志文件（当前不存在主从复制关系）
+--purge binary logs to log_name;   //删除某个日志之前的所有二进制日志文件
+--purge binary logs before '2017-03-10 10:10:00'; //清除某个时间点以前的二进制日志文件
+--purge master logs before date_sub( now( ), interval 7 day); //清除7天前的二进制日志文件
+
+```
+
+* 命令查看
+
+```
+mysqlbinlog log_name
 
 ```
 
